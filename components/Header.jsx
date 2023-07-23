@@ -56,7 +56,7 @@ const Header = () => {
 
       <div className="pb-10">
         <Link
-          href={'#'}
+          href={'/create'}
           className="bg-amber-500 hover:bg-rose-600 text-white rounded-md
         cursor-pointer font-semibold py-3 px-5"
         >
