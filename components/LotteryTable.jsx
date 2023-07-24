@@ -2,10 +2,14 @@ import Link from 'next/link'
 import { FaEthereum } from 'react-icons/fa'
 import { CountDown } from './'
 
-const LotteryTable = ({ lottery }) => {
+const LotteryTable = ({ lottery, luckyNumbers, purchasedNumbers }) => {
 
   const handleGenerateLottery = () => {
 
+  }
+
+  const handlePurchase = (i) => {
+    console.log(i)
   }
 
   return (
@@ -60,7 +64,7 @@ const LotteryTable = ({ lottery }) => {
             </tr>
           </thead>
           <tbody className="max-h-80 overflow-y-auto block">
-            {Array(5).fill()?.map((luckyNumber, i) => (
+            {luckyNumbers?.map((luckyNumber, i) => (
               <tr className="flex justify-between border-b text-left" key={i}>
                 <td className="px-4 py-2 font-semibold">{i + 1}</td>
                 <td className="px-4 py-2 font-semibold">
@@ -74,7 +78,7 @@ const LotteryTable = ({ lottery }) => {
                 <td className="px-4 py-2 font-semibold">
                   <button
                     onClick={() => handlePurchase(i)}
-                    className={`bg-black opacity-50 cursor-not-allowed
+                    className={`bg-black
                       text-white text-sm py-2 px-4 rounded-full`}
                   >
                     BUY NOW

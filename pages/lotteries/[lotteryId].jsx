@@ -1,10 +1,9 @@
 import Head from 'next/head'
-import { useState } from 'react'
-import { SubHeader, LotteryTable } from '@/components'
+import { SubHeader, LotteryTable, Generator } from '@/components'
 import { generateLottery, getPurchaseNumbers } from "@/services/dummyData"
 
 const Lottery = ({ lottery, lotteryNumbers, purchasedNumbers }) => {
-  console.log(lottery, lotteryNumbers, purchasedNumbers)
+
   return (
     <div className="min-h-screen">
       <Head>
@@ -14,7 +13,8 @@ const Lottery = ({ lottery, lotteryNumbers, purchasedNumbers }) => {
 
       <div className="min-h-screen bg-slate-100">
         <SubHeader />
-        <LotteryTable lottery={lottery} lotteryNumbers={lotteryNumbers} purchasedNumbers={purchasedNumbers} />
+        <LotteryTable lottery={lottery} luckyNumbers={lotteryNumbers} purchasedNumbers={purchasedNumbers} />
+        <Generator />
       </div>
     </div>
   )
@@ -27,10 +27,6 @@ export const getServerSideProps = async (context) => {
   const lottery = generateLottery(lotteryId);
   const purchasedNumbers = getPurchaseNumbers(5);
   const lotteryNumbers = getPurchaseNumbers(5);
-
-  console.log("lottery ", lottery)
-  console.log("lotteryNumbers ", lotteryNumbers)
-  console.log("purchasedNumbers ", purchasedNumbers)
 
   return {
     props: {

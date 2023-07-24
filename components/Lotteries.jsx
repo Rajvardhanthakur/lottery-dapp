@@ -46,7 +46,7 @@ const Lottery = ({ lottery }) => {
         <p className="font-semibold pb-2 text-green-300">{lottery.title}</p>
       </div>
       <Link
-        href={"#"}
+        href={`/lotteries/${lottery.id}`}
         className="bg-green-500 hover:bg-rose-600 py-2 px-5
               rounded-md text-white font-semibold"
       >
