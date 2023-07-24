@@ -5,3 +5,4 @@ export { default as LotteryTable } from "./LotteryTable";
 export { default as CountDown } from "./CountDown";
 export { default as Generator } from "./Generator";
 export { default as ResultTable } from "./ResultTable";
+export { default as Winners } from "./Winners";

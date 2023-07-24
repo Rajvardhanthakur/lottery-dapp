@@ -1,6 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
-import { SubHeader, ResultTable } from "@/components"
+import { SubHeader, ResultTable, Winners } from "@/components"
 import { generateLottery, generateLotteryParticipants } from "@/services/dummyData"
 
 const Result = ({ lottery, participantList, lotteryResult }) => {
@@ -14,6 +14,7 @@ const Result = ({ lottery, participantList, lotteryResult }) => {
       <div className="min-h-screen bg-slate-100">
         <SubHeader />
         <ResultTable lottery={lottery} participants={participantList} result={lotteryResult} />
+        <Winners />
       </div>
     </div>
   )
