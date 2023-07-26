@@ -13,7 +13,6 @@ const Header = () => {
   console.log("wallet :- ", wallet)
 
   const handleConnectWallet = () => {
-    console.log("connect wallet")
     connectWallet()
   }
 

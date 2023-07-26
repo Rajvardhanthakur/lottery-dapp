@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { globalActions } from "@/store/slices";
 import address from "@/artifacts/contractAddress.json";
 import abi from "@/artifacts/contracts/LotteryDapp.sol/LotteryDapp.json"
+import { formatDate } from "@/utils/helper"
 
 const { updateWallet } = globalActions;
 const contractAddress = address.address;
@@ -61,8 +62,29 @@ const getEtheriumContract = async () => {
 
 const getLotteries = async () => {
   const lotteries = await (await getEtheriumContract()).functions.getLotteries()
-  return lotteries
+  console.log("Lotteries in web3 :- ", lotteries)
+  return structureLotteries(lotteries[0]);
 }
+
+const structureLotteries = (lotteries) =>
+  lotteries.map((lottery) => {
+    console.log('Lottery struct :- ', lottery.owner)
+    return {
+      id: Number(lottery.id),
+      title: lottery.title,
+      description: lottery.description,
+      owner: lottery.owner.toLowerCase(),
+      prize: fromWei(lottery.prize),
+      ticketPrice: fromWei(lottery.ticketPrice),
+      image: lottery.image,
+      createdAt: formatDate(Number(lottery.createdAt + '000')),
+      drawsAt: formatDate(Number(lottery.expiresAt)),
+      expiresAt: Number(lottery.expiresAt),
+      participants: Number(lottery.participants),
+      drawn: lottery.drawn,
+    }
+  })
+
 
 const reportError = (error) => {
   console.error(error)

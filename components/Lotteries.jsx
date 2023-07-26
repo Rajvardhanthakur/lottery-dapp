@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { addressTruncate } from '@/utils/helper'
 
-const Jackpots = ({ lotteries }) => {
-  console.log("lotteries :- ", lotteries)
+const Lotteries = ({ lotteries }) => {
   return (
     <div className="bg-slate-100 pt-5">
       <div className=" flex flex-col items-center justify-center">
@@ -15,7 +15,6 @@ const Jackpots = ({ lotteries }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-4 lg:gap-3 py-10 w-4/5 mx-auto">
         {lotteries?.map((lottery, i) => {
-          console.log("lottery :- ", lottery)
           return (
             <Lottery lottery={lottery} key={i} />
           )
@@ -26,7 +25,6 @@ const Jackpots = ({ lotteries }) => {
 }
 
 const Lottery = ({ lottery }) => {
-  // console.log("lottery :- ".lottery)
   return (
     <div className="w-full shadow-xl shadow-black rounded-md overflow-hidden bg-gray-800 my-2 px-3 py-5">
       <div className="flex justify-start items-center space-x-2">
@@ -44,6 +42,7 @@ const Lottery = ({ lottery }) => {
       </div>
       <div className="py-5">
         <p className="font-semibold pb-2 text-green-300">{lottery.title}</p>
+        <p className="text-sm leading-5 text-gray-500">{addressTruncate(lottery.description, 90, 3, 0)}</p>
       </div>
       <Link
         href={`/lotteries/${lottery.id}`}
@@ -56,4 +55,4 @@ const Lottery = ({ lottery }) => {
   )
 }
 
-export default Jackpots
+export default Lotteries

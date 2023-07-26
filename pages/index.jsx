@@ -4,11 +4,9 @@ import {
   Header,
   Lotteries
 } from "@/components"
-import { generateLotteries } from "@/services/dummyData"
 import { getLotteries } from "@/services/web3"
 
-export default function Home({ lotteries, lotteriesW }) {
-  console.log("Lotteries W :- ", lotteriesW)
+export default function Home({ lotteries }) {
   return (
     <div>
       <Head>
@@ -25,12 +23,10 @@ export default function Home({ lotteries, lotteriesW }) {
 }
 
 export const getServerSideProps = async () => {
-  const data = generateLotteries(8)
-  const lotteriesData = getLotteries();
+  const data = await getLotteries();
   return {
     props: {
       lotteries: JSON.parse(JSON.stringify(data)),
-      lotteriesW: JSON.parse(JSON.stringify(lotteriesData))
     }
   }
 }
