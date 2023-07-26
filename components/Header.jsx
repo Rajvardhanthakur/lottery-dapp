@@ -1,13 +1,20 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-
+import { useSelector } from 'react-redux'
 import LCalc from "../assets/l-calc.png"
+import { connectWallet } from "@/services/web3"
+import { addressTruncate } from "@/utils/helper";
 
 const Header = () => {
 
+  const { wallet } = useSelector((state) => state.globalState)
+
+  console.log("wallet :- ", wallet)
+
   const handleConnectWallet = () => {
     console.log("connect wallet")
+    connectWallet()
   }
 
   return (
@@ -27,13 +34,20 @@ const Header = () => {
           <p>Contact</p>
         </div>
 
-        <button
-          onClick={handleConnectWallet}
-          className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-          hover:bg-rose-600 cursor-pointer font-semibold text-sm"
-        >
-          Connect Wallet
-        </button>
+        {
+          wallet ? (
+            <button className='flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500 hover:bg-rose-600 cursor-pointer font-semibold text-sm'>
+              {addressTruncate(wallet, 4, 4, 11)}
+            </button>
+          ) : (
+            <button
+              onClick={handleConnectWallet}
+              className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+            hover:bg-rose-600 cursor-pointer font-semibold text-sm"
+            >
+              Connect Wallet
+            </button>)
+        }
       </div>
 
       <div className="flex items-center justify-between pb-5">
