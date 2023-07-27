@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import { FaEthereum } from 'react-icons/fa'
+import { globalActions } from "@/store/slices"
+import { useDispatch } from 'react-redux'
+const { setGeneratorModel } = globalActions;
 import { CountDown } from './'
 
 const LotteryTable = ({ lottery, luckyNumbers, purchasedNumbers }) => {
-
+  const dispatch = useDispatch();
   const handleGenerateLottery = () => {
-
+    console.log("generate lucy nu ")
+    dispatch(setGeneratorModel(true))
   }
 
   const handlePurchase = (i) => {

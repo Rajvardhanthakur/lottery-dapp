@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import { FaTimes } from 'react-icons/fa'
+import { globalActions } from "@/store/slices"
+import { useDispatch, useSelector } from 'react-redux'
 
 const Winners = () => {
   const [numberOfWinners, setNumberOfWinners] = useState("")
-  const [open, setOpen] = useState(true)
+  const dispatch = useDispatch();
+  const { winnerModel } = useSelector((state) => state.globalState);
+  const { setWinnterModel } = globalActions;
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -14,7 +19,7 @@ const Winners = () => {
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex
       items-center justify-center bg-black bg-opacity-50
-      transform transition-transform duration-300 ${open ? 'scale-100' : 'scale-0'}`}
+      transform transition-transform duration-300 ${winnerModel ? 'scale-100' : 'scale-0'}`}
     >
       <div
         className="bg-white shadow-xl shadow-[#0c2856] rounded-xl
@@ -24,7 +29,7 @@ const Winners = () => {
           <div className="flex justify-between items-center">
             <p className="font-semibold">Emerging Winners</p>
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => dispatch(setWinnterModel(false))}
               type="button"
               className="border-0 bg-transparent focus:outline-none"
             >

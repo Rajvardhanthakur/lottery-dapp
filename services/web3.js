@@ -66,6 +66,11 @@ const getLotteries = async () => {
   return structureLotteries(lotteries[0]);
 }
 
+const getLottery = async (id) => {
+  const lottery = await (await getEtheriumContract()).functions.getLottery(id)
+  return structureLotteries([lottery[0]])[0]
+}
+
 const structureLotteries = (lotteries) =>
   lotteries.map((lottery) => {
     console.log('Lottery struct :- ', lottery.owner)
@@ -94,4 +99,4 @@ const notifyUser = (message) => {
   console.log(message)
 }
 
-export { connectWallet, isWallectConnected, getLotteries }
+export { connectWallet, isWallectConnected, getLotteries, getLottery }

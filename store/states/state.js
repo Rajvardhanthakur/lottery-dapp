@@ -1,4 +1,6 @@
 export const states = {
   wallet: '',
-  lotteries: []
+  lotteries: [],
+  generatorModel: false,
+  winnerModel: false
 }

@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import { FaTimes } from 'react-icons/fa'
 import { getPurchaseNumbers } from "@/services/dummyData"
+import { globalActions } from "@/store/slices"
+import { useDispatch, useSelector } from 'react-redux'
 
 const Generator = () => {
   const [luckyNumbers, setLuckyNumbers] = useState('')
   const [open, setOpen] = useState(true)
+  const dispatch = useDispatch();
+  const { generatorModel } = useSelector((state) => state.globalState);
+  const { setGeneratorModel } = globalActions;
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -16,7 +21,7 @@ const Generator = () => {
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex
       items-center justify-center bg-black bg-opacity-50
-      transform transition-transform duration-300 ${open ? 'scale-100' : 'scale-0'}`}
+      transform transition-transform duration-300 ${generatorModel ? 'scale-100' : 'scale-0'}`}
     >
       <div
         className="bg-white shadow-xl shadow-[#0c2856] rounded-xl
@@ -26,7 +31,7 @@ const Generator = () => {
           <div className="flex justify-between items-center">
             <p className="font-semibold">Generate Numbers</p>
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => dispatch(setGeneratorModel(false))}
               type="button"
               className="border-0 bg-transparent focus:outline-none"
             >

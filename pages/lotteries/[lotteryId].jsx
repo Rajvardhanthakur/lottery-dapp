@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import { SubHeader, LotteryTable, Generator } from '@/components'
 import { generateLottery, getPurchaseNumbers } from "@/services/dummyData"
+import { getLottery } from "@/services/web3";
+
 
 const Lottery = ({ lottery, lotteryNumbers, purchasedNumbers }) => {
 
@@ -24,7 +26,7 @@ export default Lottery
 
 export const getServerSideProps = async (context) => {
   const { lotteryId } = context.query;
-  const lottery = generateLottery(lotteryId);
+  const lottery = await getLottery(lotteryId);
   const purchasedNumbers = getPurchaseNumbers(5);
   const lotteryNumbers = getPurchaseNumbers(5);
 

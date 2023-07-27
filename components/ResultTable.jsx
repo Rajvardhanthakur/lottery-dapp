@@ -1,12 +1,17 @@
 import Link from 'next/link'
 import Identicon from 'react-identicons'
 import { FaEthereum } from 'react-icons/fa'
+import { globalActions } from "@/store/slices"
+import { useDispatch, useSelector } from 'react-redux'
 import { CountDown } from './'
 
 const ResultTable = ({ lottery, participants, result }) => {
+  const dispatch = useDispatch()
+  const { setWinnterModel } = globalActions;
 
   const handlePerformDraw = () => {
     console.log("handlePerformDraw")
+    dispatch(setWinnterModel(true))
   }
 
   const truncate = (text, startChar, endChar, maxLength) => {
