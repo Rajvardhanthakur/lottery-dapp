@@ -10,5 +10,8 @@ export const actions = {
   },
   setWinnterModel: (state, action) => {
     state.winnerModel = action.payload
+  },
+  setLuckyNumbers: (state, action) => {
+    state.luckyNumbers = action.payload
   }
 }

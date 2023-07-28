@@ -1,8 +1,12 @@
 import Link from 'next/link'
+import { useSelector } from 'react-redux'
+import { connectWallet } from "@/services/web3"
+import { addressTruncate } from "@/utils/helper";
 
 const SubHeader = () => {
+  const { wallet } = useSelector((state) => state.globalState)
   const handleConnectWallet = () => {
-    console.log("handle Connect Wallet")
+    connectWallet()
   }
   return (
     <div
@@ -22,13 +26,20 @@ const SubHeader = () => {
         <p>Contact</p>
       </div>
 
-      <button
-        onClick={handleConnectWallet}
-        className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-          hover:bg-rose-600 cursor-pointer font-semibold text-sm"
-      >
-        Connect Wallet
-      </button>
+      {
+        wallet ? (
+          <button className='flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500 hover:bg-rose-600 cursor-pointer font-semibold text-sm'>
+            {addressTruncate(wallet, 4, 4, 11)}
+          </button>
+        ) : (
+          <button
+            onClick={handleConnectWallet}
+            className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+            hover:bg-rose-600 cursor-pointer font-semibold text-sm"
+          >
+            Connect Wallet
+          </button>)
+      }
     </div>
   )
 }

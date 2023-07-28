@@ -1,20 +1,39 @@
 import { useState } from 'react'
 import { FaTimes } from 'react-icons/fa'
-import { getPurchaseNumbers } from "@/services/dummyData"
+import { toast } from 'react-toastify'
 import { globalActions } from "@/store/slices"
 import { useDispatch, useSelector } from 'react-redux'
+import { exportLuckyNumbers } from "@/services/web3Client"
+import { generateLuckyNumbers } from "@/utils/generatorFn"
+import { useRouter } from 'next/router'
 
 const Generator = () => {
   const [luckyNumbers, setLuckyNumbers] = useState('')
   const [open, setOpen] = useState(true)
+  const router = useRouter();
   const dispatch = useDispatch();
+  const { lotteryId } = router.query
   const { generatorModel } = useSelector((state) => state.globalState);
   const { setGeneratorModel } = globalActions;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const luckyList = getPurchaseNumbers(luckyNumbers)
-    console.log("luckyNumbers generator :- ", luckyList)
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await exportLuckyNumbers(lotteryId, generateLuckyNumbers(luckyNumbers))
+          .then(async () => {
+            setLuckyNumbers('')
+            dispatch(setGeneratorModel(true))
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Approve transaction...',
+        success: 'Lucky numbers saved to chain',
+        error: 'Encountered error',
+      }
+    )
   }
 
   return (

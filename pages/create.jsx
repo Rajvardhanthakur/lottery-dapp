@@ -1,6 +1,9 @@
 import Head from 'next/head'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 import SubHeader from '../components/SubHeader'
+import { createLotteryFn } from '@/services/web3Client'
+import { useRouter } from 'next/router'
 
 export default function Create() {
   const [title, setTitle] = useState('')
@@ -10,11 +13,46 @@ export default function Create() {
   const [ticketPrice, setTicketPrice] = useState('')
   const [expiresAt, setExpiresAt] = useState('')
 
+  const router = useRouter();
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (!title || !description || !imageUrl || !prize || !ticketPrice || !expiresAt) return
-    console.log("All Good")
+    const params = {
+      title,
+      description,
+      imageUrl,
+      prize,
+      ticketPrice,
+      expiresAt: new Date(expiresAt).getTime(),
+    }
+
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await createLotteryFn(params)
+          .then(async () => {
+            onReset()
+            router.push('/')
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Approve transaction...',
+        success: 'Lottery created successfully',
+        error: 'Encountered error',
+      }
+    )
+  }
+
+  const onReset = () => {
+    setTitle('')
+    setDescription('')
+    setImageUrl('')
+    setPrize('')
+    setTicketPrice('')
+    setExpiresAt('')
   }
 
   return (

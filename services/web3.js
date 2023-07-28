@@ -90,6 +90,11 @@ const structureLotteries = (lotteries) =>
     }
   })
 
+const getLuckyNumbers = async (id) => {
+  const luckyNumbers = await (await getEtheriumContract()).functions.getLotteryLuckyNumbers(id)
+  console.log("web3 lucky number :- ", luckyNumbers)
+  return luckyNumbers[0]
+}
 
 const reportError = (error) => {
   console.error(error)
@@ -99,4 +104,4 @@ const notifyUser = (message) => {
   console.log(message)
 }
 
-export { connectWallet, isWallectConnected, getLotteries, getLottery }
+export { connectWallet, isWallectConnected, getLotteries, getLottery, getLuckyNumbers }

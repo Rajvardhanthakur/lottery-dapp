@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import { SubHeader, LotteryTable, Generator } from '@/components'
 import { generateLottery, getPurchaseNumbers } from "@/services/dummyData"
-import { getLottery } from "@/services/web3";
+import { getLottery, getLuckyNumbers } from "@/services/web3";
 
 
-const Lottery = ({ lottery, lotteryNumbers, purchasedNumbers }) => {
-
+const Lottery = ({ lottery, luckyNumbers, purchasedNumbers }) => {
+  console.log("lucky Numbers :- ", luckyNumbers)
   return (
     <div className="min-h-screen">
       <Head>
@@ -15,7 +15,7 @@ const Lottery = ({ lottery, lotteryNumbers, purchasedNumbers }) => {
 
       <div className="min-h-screen bg-slate-100">
         <SubHeader />
-        <LotteryTable lottery={lottery} luckyNumbers={lotteryNumbers} purchasedNumbers={purchasedNumbers} />
+        <LotteryTable lottery={lottery} luckyNumbers={luckyNumbers} purchasedNumbers={purchasedNumbers} />
         <Generator />
       </div>
     </div>
@@ -28,12 +28,12 @@ export const getServerSideProps = async (context) => {
   const { lotteryId } = context.query;
   const lottery = await getLottery(lotteryId);
   const purchasedNumbers = getPurchaseNumbers(5);
-  const lotteryNumbers = getPurchaseNumbers(5);
+  const luckyNumbers = await getLuckyNumbers(lotteryId);
 
   return {
     props: {
       lottery: JSON.parse(JSON.stringify(lottery)),
-      lotteryNumbers: JSON.parse(JSON.stringify(lotteryNumbers)),
+      luckyNumbers: JSON.parse(JSON.stringify(luckyNumbers)),
       purchasedNumbers: JSON.parse(JSON.stringify(purchasedNumbers)),
     },
   }
