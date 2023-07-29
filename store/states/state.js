@@ -3,5 +3,8 @@ export const states = {
   lotteries: [],
   generatorModel: false,
   winnerModel: false,
-  luckyNumbers: []
+  lottery: null,
+  luckyNumbers: [],
+  participants: [],
+  purchasedNumbers: [],
 }

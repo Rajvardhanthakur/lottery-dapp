@@ -73,7 +73,7 @@ const Header = () => {
           className="bg-amber-500 hover:bg-rose-600 text-white rounded-md
         cursor-pointer font-semibold py-3 px-5"
         >
-          Create Jackpot
+          Create Lottery
         </Link>
       </div>
     </div>

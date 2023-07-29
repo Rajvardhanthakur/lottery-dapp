@@ -23,7 +23,7 @@ const Generator = () => {
         await exportLuckyNumbers(lotteryId, generateLuckyNumbers(luckyNumbers))
           .then(async () => {
             setLuckyNumbers('')
-            dispatch(setGeneratorModel(true))
+            dispatch(setGeneratorModel(false))
             resolve()
           })
           .catch(() => reject())

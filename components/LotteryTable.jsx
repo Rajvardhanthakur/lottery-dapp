@@ -1,19 +1,42 @@
 import Link from 'next/link'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 import { FaEthereum } from 'react-icons/fa'
 import { globalActions } from "@/store/slices"
-import { useDispatch } from 'react-redux'
-const { setGeneratorModel } = globalActions;
+import { useDispatch, useSelector } from 'react-redux'
+import { buyTicket } from '@/services/web3Client'
 import { CountDown } from './'
 
 const LotteryTable = ({ lottery, luckyNumbers, purchasedNumbers }) => {
   const dispatch = useDispatch();
+  const { setGeneratorModel } = globalActions;
+  const { wallet } = useSelector((state) => state.globalState)
+  const router = useRouter();
+  const { lotteryId } = router.query
+
+  console.log("purchasedNumbers ", purchasedNumbers)
+
   const handleGenerateLottery = () => {
-    console.log("generate lucy nu ")
+    if (luckyNumbers.length > 0) return toast.warning('Already generated')
     dispatch(setGeneratorModel(true))
   }
 
-  const handlePurchase = (i) => {
-    console.log(i)
+  const handlePurchase = async (i) => {
+    if (!wallet) return toast.warning('Connect your wallet')
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await buyTicket(lotteryId, i, lottery?.ticketPrice)
+          .then(async () => {
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Approve transaction...',
+        success: 'Ticket purchased successfully',
+        error: 'Encountered error',
+      }
+    )
   }
 
   return (
@@ -33,15 +56,19 @@ const LotteryTable = ({ lottery, luckyNumbers, purchasedNumbers }) => {
         {lottery?.expiresAt ? <CountDown timestamp={lottery?.expiresAt} /> : null}
 
         <div className="flex justify-center items-center space-x-2">
-          <button
-            disabled={Date.now() > lottery?.expiresAt}
-            onClick={handleGenerateLottery}
-            className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-            hover:bg-rose-600 font-semibold"
-          >
-            Generate Lucky Numbers
-          </button>
 
+          {wallet?.toLowerCase() == lottery?.owner && (
+            <button
+              disabled={Date.now() > lottery?.expiresAt}
+              onClick={handleGenerateLottery}
+              className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+            hover:bg-rose-600 font-semibold"
+            >
+              Generate Lucky Numbers
+            </button>
+
+          )
+          }
           <Link
             href={`/results/` + lottery?.id}
             className="flex flex-nowrap border py-2 px-4 rounded-full bg-[#0c2856]
@@ -82,8 +109,10 @@ const LotteryTable = ({ lottery, luckyNumbers, purchasedNumbers }) => {
                 <td className="px-4 py-2 font-semibold">
                   <button
                     onClick={() => handlePurchase(i)}
-                    className={`bg-black
-                      text-white text-sm py-2 px-4 rounded-full`}
+                    className={`bg-black ${purchasedNumbers.includes(luckyNumber)
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-rose-600'
+                      } text-white text-sm py-2 px-4 rounded-full`}
                   >
                     BUY NOW
                   </button>

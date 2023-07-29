@@ -1,11 +1,22 @@
 import Head from 'next/head'
 import { SubHeader, LotteryTable, Generator } from '@/components'
-import { generateLottery, getPurchaseNumbers } from "@/services/dummyData"
-import { getLottery, getLuckyNumbers } from "@/services/web3";
+import { getLottery, getLuckyNumbers, getPurchasedNumbers } from "@/services/web3";
+import { useDispatch, useSelector } from 'react-redux';
+import { globalActions } from "@/store/slices"
+import { useEffect } from 'react';
 
 
-const Lottery = ({ lottery, luckyNumbers, purchasedNumbers }) => {
-  console.log("lucky Numbers :- ", luckyNumbers)
+const Lottery = ({ lotteryServer, luckyNumbersServer, purchasedNumbersServer }) => {
+  const dispatch = useDispatch();
+  const { luckyNumbers, purchasedNumbers, lottery, wallet } = useSelector((state) => state.globalState);
+  const { setLuckyNumbers, setPurchasedNumbers, setLottery } = globalActions
+
+  useEffect(() => {
+    dispatch(setLottery(lotteryServer))
+    dispatch(setLuckyNumbers(luckyNumbersServer))
+    dispatch(setPurchasedNumbers(purchasedNumbersServer))
+  }, [])
+
   return (
     <div className="min-h-screen">
       <Head>
@@ -27,14 +38,14 @@ export default Lottery
 export const getServerSideProps = async (context) => {
   const { lotteryId } = context.query;
   const lottery = await getLottery(lotteryId);
-  const purchasedNumbers = getPurchaseNumbers(5);
+  const purchasedNumbers = await getPurchasedNumbers(lotteryId);
   const luckyNumbers = await getLuckyNumbers(lotteryId);
 
   return {
     props: {
-      lottery: JSON.parse(JSON.stringify(lottery)),
-      luckyNumbers: JSON.parse(JSON.stringify(luckyNumbers)),
-      purchasedNumbers: JSON.parse(JSON.stringify(purchasedNumbers)),
+      lotteryServer: JSON.parse(JSON.stringify(lottery)),
+      luckyNumbersServer: JSON.parse(JSON.stringify(luckyNumbers)),
+      purchasedNumbersServer: JSON.parse(JSON.stringify(purchasedNumbers)),
     },
   }
 }

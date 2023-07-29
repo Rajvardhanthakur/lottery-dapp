@@ -96,6 +96,11 @@ const getLuckyNumbers = async (id) => {
   return luckyNumbers[0]
 }
 
+const getPurchasedNumbers = async (id) => {
+  const participants = await (await getEtheriumContract()).functions.getLotteryParticipants(id)
+  return structuredNumbers(participants[0])
+}
+
 const reportError = (error) => {
   console.error(error)
 }
@@ -104,4 +109,15 @@ const notifyUser = (message) => {
   console.log(message)
 }
 
-export { connectWallet, isWallectConnected, getLotteries, getLottery, getLuckyNumbers }
+const structuredNumbers = (participants) => {
+  const purchasedNumbers = []
+
+  for (let i = 0; i < participants.length; i++) {
+    const purchasedNumber = participants[i][1]
+    purchasedNumbers.push(purchasedNumber)
+  }
+
+  return purchasedNumbers
+}
+
+export { connectWallet, isWallectConnected, getLotteries, getLottery, getLuckyNumbers, getPurchasedNumbers }
