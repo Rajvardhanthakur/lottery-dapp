@@ -108,7 +108,6 @@ const generateRandomEthereumAddress = () => {
 }
 
 const getPurchaseNumbers = (count) => {
-  console.log("count ;- ", count)
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqurstuvwxyz0123456789";
   const result = []
   for (let i = 0; i < count; i++) {

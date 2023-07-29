@@ -58,7 +58,6 @@ async function main() {
   }
 
   result = await contract.getLotteries()
-  console.log("Result :- ", result)
 
   const address = JSON.stringify({ address: contract.address }, null, 4)
   fs.writeFile('./artifacts/contractAddress.json', address, 'utf8', (err) => {

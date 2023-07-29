@@ -1,18 +1,39 @@
 import { useState } from 'react'
 import { FaTimes } from 'react-icons/fa'
-import { globalActions } from "@/store/slices"
+import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import { globalActions } from "@/store/slices"
+import { performDraw } from "@/services/web3Client";
 
 const Winners = () => {
+  const router = useRouter()
   const [numberOfWinners, setNumberOfWinners] = useState("")
   const dispatch = useDispatch();
   const { winnerModel } = useSelector((state) => state.globalState);
-  const { setWinnterModel } = globalActions;
+  const { setWinnerModal } = globalActions;
+  const { resultId } = router.query;
 
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log("handle submit for winners")
+
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await performDraw(resultId, numberOfWinners)
+          .then(async () => {
+            setNumberOfwinners('')
+            dispatch(setWinnerModal(false))
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Approve transaction...',
+        success: 'Draw performed successfully',
+        error: 'Encountered error',
+      }
+    )
   }
 
   return (
@@ -29,7 +50,7 @@ const Winners = () => {
           <div className="flex justify-between items-center">
             <p className="font-semibold">Emerging Winners</p>
             <button
-              onClick={() => dispatch(setWinnterModel(false))}
+              onClick={() => dispatch(setWinnerModal(false))}
               type="button"
               className="border-0 bg-transparent focus:outline-none"
             >

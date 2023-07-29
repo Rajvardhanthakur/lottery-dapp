@@ -3,27 +3,16 @@ import Identicon from 'react-identicons'
 import { FaEthereum } from 'react-icons/fa'
 import { globalActions } from "@/store/slices"
 import { useDispatch, useSelector } from 'react-redux'
+import { addressTruncate } from "@/utils/helper";
 import { CountDown } from './'
 
 const ResultTable = ({ lottery, participants, result }) => {
+  const { wallet } = useSelector((state) => state.globalState)
   const dispatch = useDispatch()
-  const { setWinnterModel } = globalActions;
+  const { setWinnerModal } = globalActions;
 
   const handlePerformDraw = () => {
-    console.log("handlePerformDraw")
-    dispatch(setWinnterModel(true))
-  }
-
-  const truncate = (text, startChar, endChar, maxLength) => {
-    if (text.length > maxLength) {
-      let start = text.substring(0, startChar)
-      let end = text.substring(text.length - endChar, text.length)
-      while (start.length + end.length < maxLength) {
-        start = start + "."
-      }
-      return start + end;
-    }
-    return text;
+    dispatch(setWinnerModal(true))
   }
 
   return (
@@ -34,7 +23,7 @@ const ResultTable = ({ lottery, participants, result }) => {
         <p className="text-sm text-gray-500 w-full sm:w-2/3">{lottery?.description}</p>
         <p className="text-sm text-gray-500 w-full sm:w-2/3">
           Result for{' '}
-          <span className="font-medium text-green-600"> winners</span> out
+          <span className="font-medium text-green-600">{lottery?.winners} winners</span> out
           of <span className="font-medium text-black">{lottery?.participants} participants</span>{' '}
           <span className="font-medium text-gray-600">
             {result?.winners?.length > 0 ? 'Drawn' : 'Not Drawn'}
@@ -46,14 +35,18 @@ const ResultTable = ({ lottery, participants, result }) => {
         {lottery?.expiresAt ? <CountDown timestamp={lottery?.expiresAt} /> : null}
 
         <div className="flex justify-center items-center space-x-2">
-          <button
-            disabled={lottery?.expiresAt > Date.now()}
-            onClick={handlePerformDraw}
-            className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+          {
+            wallet.toLowerCase() == lottery?.owner ?
+              <button
+                disabled={lottery?.expiresAt > Date.now()}
+                onClick={handlePerformDraw}
+                className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
             hover:bg-rose-600 font-semibold`}
-          >
-            Perform Draw
-          </button>
+              >
+                Perform Draw
+              </button>
+              : null
+          }
 
           <Link
             href={`/lotteries/` + lottery?.id}
@@ -81,7 +74,7 @@ const ResultTable = ({ lottery, participants, result }) => {
                 <Identicon size={30} string={i} className="rounded-full h-12 w-12" />
                 <div className="flex justify-center items-center space-x-2 text-sm">
                   <p className="font-semibold text-lg text-slate-500">
-                    {truncate(participant.account, 4, 4, 11)}
+                    {addressTruncate(participant.account, 4, 4, 11)}
                   </p>
                   <p className="text-slate-500">{participant.lotteryNumber}</p>
                   {result?.winners?.includes(participant.lotteryNumber) ? (

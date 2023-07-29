@@ -7,4 +7,5 @@ export const states = {
   luckyNumbers: [],
   participants: [],
   purchasedNumbers: [],
+  result: null,
 }

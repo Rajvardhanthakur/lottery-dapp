@@ -10,8 +10,6 @@ const Header = () => {
 
   const { wallet } = useSelector((state) => state.globalState)
 
-  console.log("wallet :- ", wallet)
-
   const handleConnectWallet = () => {
     connectWallet()
   }

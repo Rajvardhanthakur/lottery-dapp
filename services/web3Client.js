@@ -3,13 +3,14 @@ import { ethers } from "ethers";
 import { globalActions } from "@/store/slices";
 import address from "@/artifacts/contractAddress.json";
 import abi from "@/artifacts/contracts/LotteryDapp.sol/LotteryDapp.json"
-import { formatDate } from "@/utils/helper"
-import { getLuckyNumbers, getPurchasedNumbers, getLottery } from "./web3"
+import { getLuckyNumbers, getPurchasedNumbers, getLottery, getLotteryResult, getParticipants } from "./web3"
 
 const {
   setLuckyNumbers,
   setLottery,
   setPurchasedNumbers,
+  setResult,
+  setParticipants
 } = globalActions
 
 
@@ -91,6 +92,28 @@ const buyTicket = async (id, luckyNumberId, ticketPrice) => {
   }
 }
 
+const performDraw = async (id, numOfWinners) => {
+  try {
+    if (!ethereum) return notifyUser('Please install Metamask')
+    const connectedAccount = store.getState().globalState.wallet
+    const contract = await getEthereumContract()
+    tx = await contract.randomlySelectWinners(id, numOfWinners, {
+      from: connectedAccount,
+    })
+    await tx.wait()
+    const lotteryParticipants = await getParticipants(id)
+    const lottery = await getLottery(id)
+    const result = await getLotteryResult(id)
+
+    store.dispatch(setParticipants(lotteryParticipants))
+    store.dispatch(setLottery(lottery))
+    store.dispatch(setResult(result))
+  } catch (error) {
+    reportError(error)
+  }
+}
+
+
 const reportError = (error) => {
   console.error(error)
 }
@@ -99,4 +122,4 @@ const notifyUser = (message) => {
   console.log(message)
 }
 
-export { getEthereumContract, createLotteryFn, exportLuckyNumbers, buyTicket }
+export { getEthereumContract, createLotteryFn, exportLuckyNumbers, buyTicket, performDraw }

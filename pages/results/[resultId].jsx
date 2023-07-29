@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
+import { useDispatch, useSelector } from 'react-redux'
 import { SubHeader, ResultTable, Winners } from "@/components"
-import { generateLottery, generateLotteryParticipants } from "@/services/dummyData"
+import { getLottery, getParticipants, getLotteryResult } from "@/services/web3"
+import { toast } from 'react-toastify'
+import { globalActions } from "@/store/slices"
 
-const Result = ({ lottery, participantList, lotteryResult }) => {
+const Result = ({ lotterySsr, participantList, lotteryResult }) => {
+  const { participants, lottery, result } = useSelector((state) => state.globalState)
+  const { setParticipants, setLottery, setResult } = globalActions
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(setResult(lotteryResult))
+    dispatch(setLottery(lotterySsr))
+    dispatch(setParticipants(participantList))
+  }, [])
+
   return (
     <div>
       <Head>
@@ -13,7 +26,7 @@ const Result = ({ lottery, participantList, lotteryResult }) => {
 
       <div className="min-h-screen bg-slate-100">
         <SubHeader />
-        <ResultTable lottery={lottery} participants={participantList} result={lotteryResult} />
+        <ResultTable lottery={lottery} participants={participants} result={result} />
         <Winners />
       </div>
     </div>
@@ -24,13 +37,13 @@ export default Result
 
 export const getServerSideProps = async (context) => {
   const { resultId } = context.query;
-  const lottery = generateLottery(resultId);
-  const participantList = generateLotteryParticipants(6);
-  const lotteryResult = []
+  const lottery = await getLottery(resultId);
+  const participantList = await getParticipants(resultId);
+  const lotteryResult = await getLotteryResult(resultId)
 
   return {
     props: {
-      lottery: JSON.parse(JSON.stringify(lottery)),
+      lotterySsr: JSON.parse(JSON.stringify(lottery)),
       participantList: JSON.parse(JSON.stringify(participantList)),
       lotteryResult: JSON.parse(JSON.stringify(lotteryResult))
     }

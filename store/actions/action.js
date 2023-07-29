@@ -8,7 +8,7 @@ export const actions = {
   setGeneratorModel: (state, action) => {
     state.generatorModel = action.payload
   },
-  setWinnterModel: (state, action) => {
+  setWinnerModal: (state, action) => {
     state.winnerModel = action.payload
   },
   setLuckyNumbers: (state, action) => {
@@ -26,5 +26,7 @@ export const actions = {
   setParticipants: (state, action) => {
     state.participants = action.payload
   },
-
+  setResult: (state, action) => {
+    state.result = action.payload
+  },
 }

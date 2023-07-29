@@ -62,7 +62,6 @@ const getEtheriumContract = async () => {
 
 const getLotteries = async () => {
   const lotteries = await (await getEtheriumContract()).functions.getLotteries()
-  console.log("Lotteries in web3 :- ", lotteries)
   return structureLotteries(lotteries[0]);
 }
 
@@ -71,9 +70,15 @@ const getLottery = async (id) => {
   return structureLotteries([lottery[0]])[0]
 }
 
+const getParticipants = async (id) => {
+  const participants = await (await getEtheriumContract()).functions.getLotteryParticipants(id)
+  return structuredParticipants(participants[0])
+}
+
+
 const structureLotteries = (lotteries) =>
   lotteries.map((lottery) => {
-    console.log('Lottery struct :- ', lottery.owner)
+    console.log('Lottery struct :- ', lottery)
     return {
       id: Number(lottery.id),
       title: lottery.title,
@@ -87,12 +92,13 @@ const structureLotteries = (lotteries) =>
       expiresAt: Number(lottery.expiresAt),
       participants: Number(lottery.participants),
       drawn: lottery.drawn,
+      winners: Number(lottery.winners),
+      participants: Number(lottery.participants)
     }
   })
 
 const getLuckyNumbers = async (id) => {
   const luckyNumbers = await (await getEtheriumContract()).functions.getLotteryLuckyNumbers(id)
-  console.log("web3 lucky number :- ", luckyNumbers)
   return luckyNumbers[0]
 }
 
@@ -101,12 +107,43 @@ const getPurchasedNumbers = async (id) => {
   return structuredNumbers(participants[0])
 }
 
+const getLotteryResult = async (id) => {
+  const lotterResult = await (await getEtheriumContract()).functions.getLotteryResult(id)
+  return structuredResult(lotterResult[0])
+}
+
+
 const reportError = (error) => {
   console.error(error)
 }
 
 const notifyUser = (message) => {
   console.log(message)
+}
+
+const structuredParticipants = (participants) =>
+  participants.map((participant) => ({
+    account: participant[0].toLowerCase(),
+    lotteryNumber: participant[1],
+    paid: participant[2],
+  }))
+
+const structuredResult = (result) => {
+  const LotteryResult = {
+    id: Number(result[0]),
+    completed: result[1],
+    paidout: result[2],
+    timestamp: Number(result[3] + '000'),
+    sharePerWinner: fromWei(result[4]),
+    winners: [],
+  }
+
+  for (let i = 0; i < result[5].length; i++) {
+    const winner = result[5][i][1]
+    LotteryResult.winners.push(winner)
+  }
+
+  return LotteryResult
 }
 
 const structuredNumbers = (participants) => {
@@ -120,4 +157,4 @@ const structuredNumbers = (participants) => {
   return purchasedNumbers
 }
 
-export { connectWallet, isWallectConnected, getLotteries, getLottery, getLuckyNumbers, getPurchasedNumbers }
+export { connectWallet, isWallectConnected, getLotteries, getLottery, getLuckyNumbers, getPurchasedNumbers, getParticipants, getLotteryResult }
